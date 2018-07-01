@@ -29,6 +29,11 @@ type Signer struct {
 	headers []string
 }
 
+const (
+	headerSignature     = "Signature"
+	headerAuthorization = "Authorization"
+)
+
 // NewSigner contructs a signer with the specified key id, key, algorithm,
 // and headers to sign. By default, if headers is nil or empty, the
 // request-target and date headers will be signed.

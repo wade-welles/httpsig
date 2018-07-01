@@ -26,11 +26,24 @@ import (
 type Verifier struct {
 	key_getter       KeyGetter
 	required_headers []string
+	sigHeader        string
 }
 
+// NewVerifier creates a Verifier that checks against the Authorization header
 func NewVerifier(key_getter KeyGetter) *Verifier {
 	v := &Verifier{
 		key_getter: key_getter,
+		sigHeader:  headerAuthorization,
+	}
+	v.SetRequiredHeaders(nil)
+	return v
+}
+
+// NewSigHeaderVerifier creates a Verifier that checks against the Signature header
+func NewSigHeaderVerifier(key_getter KeyGetter) *Verifier {
+	v := &Verifier{
+		key_getter: key_getter,
+		sigHeader:  headerSignature,
 	}
 	v.SetRequiredHeaders(nil)
 	return v
@@ -53,7 +66,12 @@ func (v *Verifier) SetRequiredHeaders(headers []string) {
 
 func (v *Verifier) Verify(req *http.Request) error {
 	// retrieve and validate params from the request
-	params := getParamsFromAuthHeader(req)
+	var params *Params
+	if v.sigHeader == headerAuthorization {
+		params = getParamsFromAuthHeader(req)
+	} else {
+		params = getParamsFromSigHeader(req)
+	}
 	if params == nil {
 		return fmt.Errorf("no params present")
 	}
@@ -132,6 +150,10 @@ type Params struct {
 
 func getParamsFromAuthHeader(req *http.Request) *Params {
 	return getParams(req, "Authorization", "Signature ")
+}
+
+func getParamsFromSigHeader(req *http.Request) *Params {
+	return getParams(req, "Signature", "")
 }
 
 func getParams(req *http.Request, header, prefix string) *Params {
