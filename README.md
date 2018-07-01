@@ -1,5 +1,7 @@
 # HTTPSIG for Go
 
+[![GoDoc](https://godoc.org/github.com/writeas/httpsig?status.svg)](https://godoc.org/github.com/writeas/httpsig)
+
 This library implements HTTP request signature generation and verification based on
 the RFC draft specification https://tools.ietf.org/html/draft-cavage-http-signatures-06.
 
