@@ -11,7 +11,7 @@ name: https://github.com/ahknight/httpsig
 ## Installing
 
 ```
-go get gopkg.in/spacemonkey/spacemonkeygo/httpsig.v0
+go get github.com/writeas/httpsig
 ```
 
 ## Signing Requests
@@ -51,7 +51,23 @@ fmt.Println("AUTHORIZATION:", req.Header.Get('Authorization'))
 
 ...
 
-AUTHORIZATION: Signature: keyId="foo",algorithm="sha-256",signature="..."
+AUTHORIZATION: Signature keyId="foo",algorithm="sha-256",signature="..."
+
+```
+
+You can also call `SignSigHeader()` to put the signature in the `Signature`
+header, instead.
+
+```
+err = signer.SignSigHeader(req)
+if err != nil {
+    ...
+}
+fmt.Println("SIGNATURE:", req.Header.Get('Signature'))
+
+...
+
+SIGNATURE: keyId="foo",algorithm="sha-256",signature="..."
 
 ```
 
